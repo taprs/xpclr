@@ -1,0 +1,23 @@
+# Conda environment for xpclr with numpy/scipy compatibility fixes
+# Created: 2026-03-12
+# 
+# Usage:
+#   conda env create -f environment-minimal.yml
+#   conda activate xpclr
+#
+name: xpclr
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - python=3.10
+  - pip
+  - setuptools
+  - pip:
+    - numpy==1.26.4
+    - scipy==1.14.0
+    - pandas
+    - scikit-allel
+    - h5py
+    - zarr
+    - pytest
