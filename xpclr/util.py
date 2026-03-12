@@ -106,12 +106,19 @@ def get_sample_ids(sample_input):
 
 def load_vcf_wrapper(path, seqid, samples, samples_path, gdistkey):
 
-    var_gdistkey = f'variants/{gdistkey}'
+    fields = ['variants/POS', 'calldata/GT', 'samples']
+    numbers_dict = {}
+    
+    if gdistkey is not None:
+        var_gdistkey = f'variants/{gdistkey}'
+        fields.append(var_gdistkey)
+        numbers_dict[var_gdistkey] = 1
+    
     callset = allel.read_vcf(
         path,
         region=seqid,
-        fields=['variants/POS', var_gdistkey, 'calldata/GT', 'samples'],
-        numbers = {var_gdistkey : 1},
+        fields=fields,
+        numbers=numbers_dict,
         tabix="tabix",
         samples=samples)
 
@@ -120,7 +127,11 @@ def load_vcf_wrapper(path, seqid, samples, samples_path, gdistkey):
     
     p = allel.SortedIndex(callset["variants/POS"])
     g = allel.GenotypeArray(callset['calldata/GT'])
-    m = allel.SortedIndex(callset[var_gdistkey])
+    
+    if gdistkey is not None:
+        m = allel.SortedIndex(callset[var_gdistkey])
+    else:
+        m = None
 
     return p, g, m
 
